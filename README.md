@@ -9,7 +9,6 @@ Welcome to the FreePT project! This repository contains the code for a website (
 - [Installation](#installation)
 - [Contributing](#contributing)
 - [License](#license)
-- [Contact](#contact)
 
 ## Features
 
