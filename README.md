@@ -51,13 +51,3 @@ Please make sure your code adheres to our coding standards and includes tests.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-Thank you for visiting our project! We hope you find it useful and consider contributing.
-```
-
-### Final Checklist
-
-1. **Create a new repository** on GitHub.
-2. **Clone** the repository to your local machine.
-3. **Add the `LICENSE` and `README.md` files** to the root directory of your project.
-4. **Commit and push** these changes to GitHub.
