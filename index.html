@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT+ All</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000; /* Black background */
+            color: #fff; /* White text color */
+            height: 100vh; /* Make the body cover the whole screen */
+        }
+
+        .chat-container {
+            flex: 1;
+            background-color: #111; /* Darker gray background for chat container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            height: calc(100% - 150px); /* Adjust height to leave space for input */
+            outline: 2px solid white; /* White outline */
+        }
+
+        .input-container {
+            background-color: #111; /* Darker gray background for input container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            outline: 2px solid white; /* White outline */
+        }
+
+        textarea {
+            flex: 1;
+            padding: 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #222; /* Dark gray background for textarea */
+            color: #fff; /* White text color */
+            outline: 2px solid white; /* White outline */
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            margin-right: 10px;
+            border-radius: 5px;
+            background-color: #fff; /* Darker gray button */
+            color: #000; /* White text color */
+            cursor: pointer;
+            outline: 2px solid black; /* White outline */
+        }
+
+        button:hover {
+            background-color: #a7a7a7; /* Slightly darker gray on hover */
+        }
+
+        /* Loading animation styles */
+        .loading-container {
+            display: none; /* Initially hidden */
+            position: fixed;
+            bottom: 90px;
+            right: 10px;
+            z-index: 9999;
+            outline: 2px solid white; /* White outline */
+        }
+
+        .loading-message {
+            background-color: #111; /* Darker gray background */
+            color: #fff; /* White text color */
+            padding: 0px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+            max-width: 200px;
+            word-wrap: break-word;
+            outline: 2px solid white; /* White outline */
+        }
+
+        /* Styling for the select field */
+        select {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #222; /* Dark gray background for select field */
+            color: #fff; /* White text color */
+            cursor: pointer;
+            outline: 2px solid white; /* White outline */
+        }
+
+        .message {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .message .content {
+            padding: 10px;
+            border-radius: 10px;
+            word-wrap: break-word; /* Wrap long words */
+            white-space: pre-wrap; /* Preserve newlines */
+            outline: 2px solid white; /* White outline */
+        }
+
+        .user-message .content {
+            background-color: #333; /* Slightly darker gray background for user messages */
+            color: #fff; /* White text color */
+            outline: 2px solid white; /* White outline */
+        }
+
+        .bot-message .content {
+            background-color: #222; /* Darkest gray background for bot messages */
+            color: #fff; /* White text color */
+            outline: 2px solid white; /* White outline */
+        }
+
+        .input-container {
+            background-color: #111; /* Darker gray background for input container */
+            padding: 5px;
+            border-radius: 0px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            outline: 2px solid white; /* White outline */
+        }
+
+        button.new-chat {
+            padding: 8px 12px;
+            font-size: 14px;
+            outline: 2px solid white;
+            float: right; /* Align button to the right */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-message" id="loadingMessage">Loading...</div>
+    </div>
+    <div class="chat-container">
+        <select id="model">
+            <option value="gpt-3.5-turbo">GPT 3.5 Turbo</option>
+            <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo 1106</option>
+            <option value="gpt-3.5-turbo-0125">GPT 3.5 Turbo 0125</option>
+            <option value="gpt-3.5-turbo-16k">GPT 3.5 Turbo 16k</option>
+            <option value="gpt-4">GPT 4</option>
+            <option value="gpt-4-0125-preview">GPT 4 0125 Preview</option>
+            <option value="gpt-4-turbo">GPT 4 Turbo</option>
+            <option value="gpt-4o">GPT 4o</option>
+        </select>
+        <button class="new-chat" onclick="clearChat()">New Chat</button>
+        <div class="chat" id="chat">
+            <!-- Chat messages will be displayed here -->
+        </div>
+    </div>
+    <div class="input-container">
+        <textarea id="prompt" rows="2" placeholder="Type your message..."></textarea>
+        <button id="sendButton" onclick="sendMessage()">Send</button>
+    </div>
+    <script>
+        var chatHistory = {
+            model: "gpt-4o",
+            messages: [
+                { 
+                    role: "system", 
+                    content: ""
+                }
+            ]
+        };
+        
+        function escapeHTML(html) {
+            var escaped = document.createElement('textarea');
+            escaped.textContent = html;
+            return escaped.innerHTML;
+        }
+        
+        function sendMessage() {
+            var model = document.getElementById("model").value;
+            var prompt = document.getElementById("prompt").value;
+            var chat = document.getElementById("chat");
+            var sendButton = document.getElementById("sendButton");
+        
+            document.getElementById("prompt").value = "";
+        
+            // Disable send button
+            sendButton.disabled = true;
+        
+            // Display loading message
+            document.getElementById("loadingContainer").style.display = "block";
+        
+            // Add user prompt to chat history
+            chatHistory.messages.push({ role: "user", content: prompt });
+        
+            // Create user message element
+            var userMessage = document.createElement("div");
+            userMessage.classList.add("message", "user-message");
+            userMessage.innerHTML = '<div class="content">' + escapeHTML(prompt) + '</div>';
+            chat.appendChild(userMessage);
+        
+            // Scroll to bottom
+            chat.scrollTop = chat.scrollHeight;
+        
+            // Send request to text generation API
+            var url = "https://reverse.mubi.tech/v1/chat/completions";
+            var data = {
+                model: model,
+                messages: chatHistory.messages,
+            };
+        
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading message
+                document.getElementById("loadingContainer").style.display = "none";
+        
+                // Enable send button
+                sendButton.disabled = false;
+        
+                // Add bot response to chat history
+                var botResponse = escapeHTML(data.choices[0].message.content);
+                chatHistory.messages.push({ role: "assistant", content: botResponse });
+        
+                // Create bot message element
+                var botMessage = document.createElement("div");
+                botMessage.classList.add("message", "bot-message");
+                botMessage.innerHTML = '<div class="content">' + botResponse + '</div>';
+                chat.appendChild(botMessage);
+        
+                // Scroll to bottom
+                chat.scrollTop = chat.scrollHeight;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Hide loading message
+                document.getElementById("loadingContainer").style.display = "none";
+                // Enable send button
+                sendButton.disabled = false;
+            });
+        }
+        
+        function clearChat() {
+            // Reset chat history
+            chatHistory = {
+                model: "gpt-4",
+                messages: [
+                    { 
+                        role: "system", 
+                        content: ""
+                    }
+                ]
+            };
+        
+            // Clear chat messages in the UI
+            var chat = document.getElementById("chat");
+            chat.innerHTML = '';
+        
+            // Scroll to bottom
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        clearChat();
+        
+        document.getElementById("prompt").addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                // Prevent default behavior (newline)
+                event.preventDefault();
+                // Check if the send button is disabled
+                var sendButton = document.getElementById("sendButton");
+                if (!sendButton.disabled) {
+                    // If the send button is not disabled, send the message
+                    sendMessage();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
