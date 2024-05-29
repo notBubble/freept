@@ -53,13 +53,6 @@ Please make sure your code adheres to our coding standards and includes tests.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Contact
-
-For any inquiries, please contact:
-
-- **Email**: notbubble@example.com
-- **Twitter**: [@notbubble](https://twitter.com/notbubble)
-
 Thank you for visiting our project! We hope you find it useful and consider contributing.
 ```
 
