@@ -3,65 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPT+ All</title>
+    <title>FreePT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #000; /* Black background */
+            background-color: #222; /* Dark background */
             color: #fff; /* White text color */
             height: 100vh; /* Make the body cover the whole screen */
+            box-shadow: 0 0 10px #2c2c2c; /* Slightly brighter shadow */
         }
 
         .chat-container {
             flex: 1;
-            background-color: #111; /* Darker gray background for chat container */
+            background-color: #333; /* Darker gray background for chat container */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px #444; /* Slightly brighter shadow */
             overflow-y: auto;
             height: calc(100% - 150px); /* Adjust height to leave space for input */
-            outline: 2px solid white; /* White outline */
         }
 
         .input-container {
-            background-color: #111; /* Darker gray background for input container */
+            background-color: #333; /* Darker gray background for input container */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px #444; /* Slightly brighter shadow */
             display: flex;
             align-items: center;
             position: fixed;
             bottom: 0;
             width: 100%;
-            outline: 2px solid white; /* White outline */
         }
 
         textarea {
             flex: 1;
             padding: 10px;
             margin-right: 5px;
+            margin-left: -10px;
             border: none;
             border-radius: 5px;
-            background-color: #222; /* Dark gray background for textarea */
+            background-color: #444; /* Dark gray background for textarea */
             color: #fff; /* White text color */
-            outline: 2px solid white; /* White outline */
+            box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
+            outline: none; /* Remove outline */
         }
 
         button {
-            padding: 10px;
+            padding: 10px 20px;
             border: none;
-            margin-right: 10px;
+            margin-right: 25px;
+            margin-left: 10px;
             border-radius: 5px;
-            background-color: #fff; /* Darker gray button */
-            color: #000; /* White text color */
+            background-color: #7289da; /* Discord blue button */
+            color: #fff; /* White text color */
             cursor: pointer;
-            outline: 2px solid black; /* White outline */
+            box-shadow: 0 0 10px #7b94f2; /* Slightly brighter shadow */
+            outline: none; /* Remove outline */
         }
 
         button:hover {
-            background-color: #a7a7a7; /* Slightly darker gray on hover */
+            background-color: #5f73a1; /* Darker blue on hover */
+        }
+
+        .chat {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            word-wrap: break-word; /* Wrap long words */
+            white-space: pre-wrap; /* Preserve newlines */
+            background-color: #444; /* Dark gray background for messages */
+            color: #fff; /* White text color */
+            margin-top: 10px;
+            box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
+            outline: none; /* Remove outline */
         }
 
         /* Loading animation styles */
@@ -71,18 +90,16 @@
             bottom: 90px;
             right: 10px;
             z-index: 9999;
-            outline: 2px solid white; /* White outline */
         }
 
         .loading-message {
             background-color: #111; /* Darker gray background */
             color: #fff; /* White text color */
-            padding: 0px 20px;
+            padding: 10px 20px;
             border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px #222; /* Slightly brighter shadow */
             max-width: 200px;
             word-wrap: break-word;
-            outline: 2px solid white; /* White outline */
         }
 
         /* Styling for the select field */
@@ -90,58 +107,11 @@
             padding: 10px;
             border: none;
             border-radius: 5px;
-            background-color: #222; /* Dark gray background for select field */
+            background-color: #444; /* Dark gray background for select field */
             color: #fff; /* White text color */
             cursor: pointer;
-            outline: 2px solid white; /* White outline */
+            box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
         }
-
-        .message {
-            display: flex;
-            margin-top: 10px;
-        }
-
-        .user-message {
-            justify-content: flex-end;
-        }
-
-        .message .content {
-            padding: 10px;
-            border-radius: 10px;
-            word-wrap: break-word; /* Wrap long words */
-            white-space: pre-wrap; /* Preserve newlines */
-            outline: 2px solid white; /* White outline */
-        }
-
-        .user-message .content {
-            background-color: #333; /* Slightly darker gray background for user messages */
-            color: #fff; /* White text color */
-            outline: 2px solid white; /* White outline */
-        }
-
-        .bot-message .content {
-            background-color: #222; /* Darkest gray background for bot messages */
-            color: #fff; /* White text color */
-            outline: 2px solid white; /* White outline */
-        }
-
-        .input-container {
-            background-color: #111; /* Darker gray background for input container */
-            padding: 5px;
-            border-radius: 0px;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            outline: 2px solid white; /* White outline */
-        }
-
-        button.new-chat {
-            padding: 8px 12px;
-            font-size: 14px;
-            outline: 2px solid white;
-            float: right; /* Align button to the right */
-        }
-
     </style>
 </head>
 <body>
@@ -159,7 +129,7 @@
             <option value="gpt-4-turbo">GPT 4 Turbo</option>
             <option value="gpt-4o">GPT 4o</option>
         </select>
-        <button class="new-chat" onclick="clearChat()">New Chat</button>
+        <button onclick="clearChat()">New Chat</button>
         <div class="chat" id="chat">
             <!-- Chat messages will be displayed here -->
         </div>
