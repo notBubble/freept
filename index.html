@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FreePT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Lexend', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #222; /* Dark background */
@@ -68,7 +69,7 @@
         }
 
         .chat {
-            margin-bottom: 20px;
+            margin-bottom: 150px;
         }
 
         .message {
@@ -76,11 +77,19 @@
             border-radius: 10px;
             word-wrap: break-word; /* Wrap long words */
             white-space: pre-wrap; /* Preserve newlines */
-            background-color: #444; /* Dark gray background for messages */
-            color: #fff; /* White text color */
             margin-top: 10px;
             box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
             outline: none; /* Remove outline */
+        }
+
+        .user-message {
+            background-color: #444; /* Dark gray background for user messages */
+            color: #fff; /* White text color */
+        }
+
+        .bot-message {
+            background-color: #222; /* Even darker background for bot messages */
+            color: #ddd; /* Slightly lighter text color for contrast */
         }
 
         /* Loading animation styles */
@@ -112,27 +121,50 @@
             cursor: pointer;
             box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
         }
+
+        .navbar {
+            position: fixed; /* Set the navbar to fixed position */
+            top: 0; /* Align the navbar to the top of the viewport */
+            left: 0; /* Align the navbar to the left of the viewport */
+            width: 100%; /* Make the navbar span the full width of the viewport */
+            z-index: 9999; /* Ensure the navbar appears above other content */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #111; /* Dark background color for navbar */
+            color: #fff; /* White text color */
+        }
+
+
+        .navbar-title {
+            font-size: 1.5rem;
+        }
     </style>
+</head>
 </head>
 <body>
     <div class="loading-container" id="loadingContainer">
         <div class="loading-message" id="loadingMessage">Loading...</div>
     </div>
-    <div class="chat-container">
-        <select id="model">
-            <option value="gpt-3.5-turbo">GPT 3.5 Turbo</option>
-            <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo 1106</option>
-            <option value="gpt-3.5-turbo-0125">GPT 3.5 Turbo 0125</option>
-            <option value="gpt-3.5-turbo-16k">GPT 3.5 Turbo 16k</option>
-            <option value="gpt-4">GPT 4</option>
-            <option value="gpt-4-0125-preview">GPT 4 0125 Preview</option>
-            <option value="gpt-4-turbo">GPT 4 Turbo</option>
-            <option value="gpt-4o">GPT 4o</option>
-        </select>
-        <button onclick="clearChat()">New Chat</button>
-        <div class="chat" id="chat">
-            <!-- Chat messages will be displayed here -->
+    <div class="navbar">
+        <div class="navbar-title">FreePT</div>
+        <div>
+            <select id="model">
+                <option value="gpt-3.5-turbo">GPT 3.5 Turbo</option>
+                <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo 1106</option>
+                <option value="gpt-3.5-turbo-0125">GPT 3.5 Turbo 0125</option>
+                <option value="gpt-3.5-turbo-16k">GPT 3.5 Turbo 16k</option>
+                <option value="gpt-4">GPT 4</option>
+                <option value="gpt-4-0125-preview">GPT 4 0125 Preview</option>
+                <option value="gpt-4-turbo">GPT 4 Turbo</option>
+                <option value="gpt-4o">GPT 4o</option>
+            </select>
+            <button onclick="clearChat()">New Chat</button>
         </div>
+    </div>
+    <div class="chat" id="chat">
+        <!-- Chat messages will be displayed here -->
     </div>
     <div class="input-container">
         <textarea id="prompt" rows="2" placeholder="Type your message..."></textarea>
@@ -142,52 +174,62 @@
         var chatHistory = {
             model: "gpt-4o",
             messages: [
-                { 
-                    role: "system", 
+                {
+                    role: "system",
                     content: ""
                 }
             ]
         };
-        
-        function escapeHTML(html) {
-            var escaped = document.createElement('textarea');
-            escaped.textContent = html;
-            return escaped.innerHTML;
-        }
-        
+
+        // Create user message element
+        var startMessage = document.createElement("div");
+        startMessage.classList.add("message", "user-message");
+        startMessage.textContent = "Fixed"; // Set textContent to escape HTML
+        chat.appendChild(startMessage);
+
+        document.getElementById("prompt").addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                var sendButton = document.getElementById("sendButton");
+                if (!sendButton.disabled) {
+                    sendMessage();
+                }
+            }
+        });
+
         function sendMessage() {
             var model = document.getElementById("model").value;
             var prompt = document.getElementById("prompt").value;
             var chat = document.getElementById("chat");
             var sendButton = document.getElementById("sendButton");
-        
+
             document.getElementById("prompt").value = "";
-        
+
             // Disable send button
             sendButton.disabled = true;
-        
+
             // Display loading message
             document.getElementById("loadingContainer").style.display = "block";
-        
+
             // Add user prompt to chat history
             chatHistory.messages.push({ role: "user", content: prompt });
-        
+
             // Create user message element
             var userMessage = document.createElement("div");
             userMessage.classList.add("message", "user-message");
-            userMessage.innerHTML = '<div class="content">' + escapeHTML(prompt) + '</div>';
+            userMessage.textContent = prompt; // Set textContent to escape HTML
             chat.appendChild(userMessage);
-        
+
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
-        
+
             // Send request to text generation API
             var url = "https://reverse.mubi.tech/v1/chat/completions";
             var data = {
                 model: model,
                 messages: chatHistory.messages,
             };
-        
+
             fetch(url, {
                 method: "POST",
                 headers: {
@@ -199,20 +241,22 @@
             .then(data => {
                 // Hide loading message
                 document.getElementById("loadingContainer").style.display = "none";
-        
+
                 // Enable send button
                 sendButton.disabled = false;
-        
+
+                // Replace the specified pattern in the bot response
+                var botResponseContent = data.choices[0].message.content;
+
                 // Add bot response to chat history
-                var botResponse = escapeHTML(data.choices[0].message.content);
-                chatHistory.messages.push({ role: "assistant", content: botResponse });
-        
+                chatHistory.messages.push({ role: "assistant", content: botResponseContent });
+
                 // Create bot message element
                 var botMessage = document.createElement("div");
                 botMessage.classList.add("message", "bot-message");
-                botMessage.innerHTML = '<div class="content">' + botResponse + '</div>';
+                botMessage.textContent = botResponseContent
                 chat.appendChild(botMessage);
-        
+
                 // Scroll to bottom
                 chat.scrollTop = chat.scrollHeight;
             })
@@ -224,39 +268,36 @@
                 sendButton.disabled = false;
             });
         }
-        
+
         function clearChat() {
             // Reset chat history
             chatHistory = {
-                model: "gpt-4",
+                model: "gpt-4o",
                 messages: [
-                    { 
-                        role: "system", 
+                    {
+                        role: "system",
                         content: ""
                     }
                 ]
             };
-        
+
             // Clear chat messages in the UI
             var chat = document.getElementById("chat");
             chat.innerHTML = '';
-        
+
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
         }
-        
-        clearChat();
-        
-        document.getElementById("prompt").addEventListener("keypress", function(event) {
-            if (event.key === "Enter" && !event.shiftKey) {
-                // Prevent default behavior (newline)
-                event.preventDefault();
-                // Check if the send button is disabled
-                var sendButton = document.getElementById("sendButton");
-                if (!sendButton.disabled) {
-                    // If the send button is not disabled, send the message
-                    sendMessage();
-                }
+
+        // Add event listener for scroll event on the chat container
+        var chatContainer = document.querySelector('.chat-container');
+        chatContainer.addEventListener('scroll', function() {
+            var navbar = document.querySelector('.navbar');
+            // Check if the scroll position is greater than a threshold
+            if (chatContainer.scrollTop > 50) {
+                navbar.style.display = 'flex'; // Show the navbar
+            } else {
+                navbar.style.display = 'none'; // Hide the navbar
             }
         });
     </script>
