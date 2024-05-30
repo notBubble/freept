@@ -10,27 +10,27 @@
             font-family: 'Lexend', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #222; /* Dark background */
-            color: #fff; /* White text color */
-            height: 100vh; /* Make the body cover the whole screen */
-            box-shadow: 0 0 10px #2c2c2c; /* Slightly brighter shadow */
+            background-color: #222;
+            color: #fff;
+            height: 100vh;
+            box-shadow: 0 0 10px #2c2c2c;
         }
 
         .chat-container {
             flex: 1;
-            background-color: #333; /* Darker gray background for chat container */
+            background-color: #333;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px #444; /* Slightly brighter shadow */
+            box-shadow: 0 0 10px #444;
             overflow-y: auto;
-            height: calc(100% - 150px); /* Adjust height to leave space for input */
+            height: calc(100% - 150px);
         }
 
         .input-container {
-            background-color: #333; /* Darker gray background for input container */
+            background-color: #333;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px #444; /* Slightly brighter shadow */
+            box-shadow: 0 0 10px #444;
             display: flex;
             align-items: center;
             position: fixed;
@@ -45,10 +45,10 @@
             margin-left: -10px;
             border: none;
             border-radius: 5px;
-            background-color: #444; /* Dark gray background for textarea */
-            color: #fff; /* White text color */
-            box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
-            outline: none; /* Remove outline */
+            background-color: #444;
+            color: #fff;
+            box-shadow: 0 0 10px #555;
+            outline: none;
         }
 
         button {
@@ -57,15 +57,15 @@
             margin-right: 25px;
             margin-left: 10px;
             border-radius: 5px;
-            background-color: #7289da; /* Discord blue button */
-            color: #fff; /* White text color */
+            background-color: #7289da;
+            color: #fff;
             cursor: pointer;
-            box-shadow: 0 0 10px #7b94f2; /* Slightly brighter shadow */
-            outline: none; /* Remove outline */
+            box-shadow: 0 0 10px #7b94f2;
+            outline: none;
         }
 
         button:hover {
-            background-color: #5f73a1; /* Darker blue on hover */
+            background-color: #5f73a1;
         }
 
         .chat {
@@ -75,26 +75,25 @@
         .message {
             padding: 10px;
             border-radius: 10px;
-            word-wrap: break-word; /* Wrap long words */
-            white-space: pre-wrap; /* Preserve newlines */
+            word-wrap: break-word;
+            white-space: pre-wrap;
             margin-top: 10px;
-            box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
-            outline: none; /* Remove outline */
+            box-shadow: 0 0 10px #555;
+            outline: none;
         }
 
         .user-message {
-            background-color: #444; /* Dark gray background for user messages */
-            color: #fff; /* White text color */
+            background-color: #444;
+            color: #fff;
         }
 
         .bot-message {
-            background-color: #222; /* Even darker background for bot messages */
-            color: #ddd; /* Slightly lighter text color for contrast */
+            background-color: #222;
+            color: #ddd;
         }
 
-        /* Loading animation styles */
         .loading-container {
-            display: none; /* Initially hidden */
+            display: none;
             position: fixed;
             bottom: 90px;
             right: 10px;
@@ -102,43 +101,74 @@
         }
 
         .loading-message {
-            background-color: #111; /* Darker gray background */
-            color: #fff; /* White text color */
+            background-color: #111;
+            color: #fff;
             padding: 10px 20px;
             border-radius: 20px;
-            box-shadow: 0 0 10px #222; /* Slightly brighter shadow */
+            box-shadow: 0 0 10px #222;
             max-width: 200px;
             word-wrap: break-word;
         }
 
-        /* Styling for the select field */
         select {
             padding: 10px;
             border: none;
             border-radius: 5px;
-            background-color: #444; /* Dark gray background for select field */
-            color: #fff; /* White text color */
+            background-color: #444;
+            color: #fff;
             cursor: pointer;
-            box-shadow: 0 0 10px #555; /* Slightly brighter shadow */
+            box-shadow: 0 0 10px #555;
         }
 
         .navbar {
-            position: fixed; /* Set the navbar to fixed position */
-            top: 0; /* Align the navbar to the top of the viewport */
-            left: 0; /* Align the navbar to the left of the viewport */
-            width: 100%; /* Make the navbar span the full width of the viewport */
-            z-index: 9999; /* Ensure the navbar appears above other content */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
-            background-color: #111; /* Dark background color for navbar */
-            color: #fff; /* White text color */
+            background-color: #111;
+            color: #fff;
         }
-
 
         .navbar-title {
             font-size: 1.5rem;
+        }
+
+        .system-edit-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .system-edit-container textarea {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .system-edit-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #7289da;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 10px #7b94f2;
+            outline: none;
+        }
+
+        .system-edit-container button:hover {
+            background-color: #5f73a1;
         }
     </style>
 </head>
@@ -160,6 +190,7 @@
                 <option value="gpt-4o">GPT 4o</option>
             </select>
             <button onclick="clearChat()">New Chat</button>
+            <button onclick="toggleEditSystemGUI()">Edit System</button> <!-- Add Edit System button -->
         </div>
     </div>
     <div class="chat" id="chat">
@@ -168,6 +199,12 @@
     <div class="input-container">
         <textarea id="prompt" rows="2" placeholder="Type your message..."></textarea>
         <button id="sendButton" onclick="sendMessage()">Send</button>
+    </div>
+    <!-- System Edit GUI -->
+    <div class="system-edit-container" id="systemEditContainer">
+        <textarea id="systemPrompt" rows="5" placeholder="Enter the new system prompt..."></textarea>
+        <button onclick="changeSystemPrompt()">Change System</button>
+        <button onclick="toggleEditSystemGUI()">Close</button>
     </div>
     <script>
         var chatHistory = {
@@ -268,18 +305,7 @@
             });
         }
 
-        function clearChat() {
-            // Reset chat history
-            chatHistory = {
-                model: "gpt-4o",
-                messages: [
-                    {
-                        role: "system",
-                        content: ""
-                    }
-                ]
-            };
-
+        function clearChat(sys) {
             // Clear chat messages in the UI
             var chat = document.getElementById("chat");
             chat.innerHTML = '';
@@ -289,15 +315,45 @@
             startMessage.textContent = "Fixed"; // Set textContent to escape HTML
             chat.appendChild(startMessage);
 
+            var system = ""
+            if (sys) {
+                var system = sys
+            }
+
+            chatHistory = {
+                model: "gpt-4o",
+                messages: [
+                    {
+                        role: "system",
+                        content: system
+                    }
+                ]
+            };
+
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
+        }
+
+        function toggleEditSystemGUI() {
+            var systemEditContainer = document.getElementById("systemEditContainer");
+            if (systemEditContainer.style.display === "none" || systemEditContainer.style.display === "") {
+                systemEditContainer.style.display = "block";
+            } else {
+                systemEditContainer.style.display = "none";
+            }
+        }
+
+        function changeSystemPrompt() {
+            var newSystemPrompt = document.getElementById("systemPrompt").value.trim();
+            var newSys = newSystemPrompt
+            toggleEditSystemGUI(); // Hide the GUI after changing the system prompt
+            clearChat(newSys);
         }
 
         // Add event listener for scroll event on the chat container
         var chatContainer = document.querySelector('.chat-container');
         chatContainer.addEventListener('scroll', function() {
             var navbar = document.querySelector('.navbar');
-            // Check if the scroll position is greater than a threshold
             if (chatContainer.scrollTop > 50) {
                 navbar.style.display = 'flex'; // Show the navbar
             } else {
