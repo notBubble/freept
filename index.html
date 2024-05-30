@@ -283,6 +283,11 @@
             // Clear chat messages in the UI
             var chat = document.getElementById("chat");
             chat.innerHTML = '';
+            // Create user message element
+            var startMessage = document.createElement("div");
+            startMessage.classList.add("message", "user-message");
+            startMessage.textContent = "Fixed"; // Set textContent to escape HTML
+            chat.appendChild(startMessage);
 
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
