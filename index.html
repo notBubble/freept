@@ -13,7 +13,27 @@
             background-color: #222;
             color: #fff;
             height: 100vh;
+            display: flex;
+            flex-direction: column;
             box-shadow: 0 0 10px #2c2c2c;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #111;
+            color: #fff;
+        }
+
+        .navbar-title {
+            font-size: 1.5rem;
         }
 
         .chat-container {
@@ -23,7 +43,14 @@
             border-radius: 10px;
             box-shadow: 0 0 10px #444;
             overflow-y: auto;
-            height: calc(100% - 150px);
+            margin-top: 60px; /* Adjust margin to fit under navbar */
+            margin-bottom: 100px; /* Adjust to make space for input area */
+            display: flex;
+            justify-content: center; /* Center the chat area horizontally */
+        }
+
+        .chat {
+            width: 100%;
         }
 
         .input-container {
@@ -49,6 +76,7 @@
             color: #fff;
             box-shadow: 0 0 10px #555;
             outline: none;
+            resize: none; /* Prevent textarea from being resized */
         }
 
         button {
@@ -66,10 +94,6 @@
 
         button:hover {
             background-color: #5f73a1;
-        }
-
-        .chat {
-            margin-bottom: 50px;
         }
 
         .message {
@@ -121,24 +145,6 @@
             box-shadow: 0 0 10px #555;
         }
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 9999;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #111;
-            color: #fff;
-        }
-
-        .navbar-title {
-            font-size: 1.5rem;
-        }
-
         .system-edit-container {
             position: fixed;
             top: 50%;
@@ -175,7 +181,7 @@
 </head>
 <body>
     <div class="loading-container" id="loadingContainer">
-        <div class="loading-message" id="loadingMessage">Loading...</div>
+        <div class="loading-message" id="loadingMessage">Thinking...</div>
     </div>
     <div class="navbar">
         <div class="navbar-title">FreePT</div>
@@ -191,11 +197,13 @@
                 <option value="gpt-4o">GPT 4o</option>
             </select>
             <button onclick="clearChat()">New Chat</button>
-            <button onclick="toggleEditSystemGUI()">Edit System</button> <!-- Add Edit System button -->
+            <button onclick="toggleEditSystemGUI()">Edit System</button>
         </div>
     </div>
-    <div class="chat" id="chat">
-        <!-- Chat messages will be displayed here -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat" id="chat">
+            <!-- Chat messages will be displayed here -->
+        </div>
     </div>
     <div class="input-container">
         <textarea id="prompt" rows="2" placeholder="Type your message..."></textarea>
@@ -218,12 +226,6 @@
             ]
         };
 
-        // Create user message element
-        var startMessage = document.createElement("div");
-        startMessage.classList.add("message", "user-message");
-        startMessage.textContent = "Fixed"; // Set textContent to escape HTML
-        chat.appendChild(startMessage);
-
         document.getElementById("prompt").addEventListener("keypress", function(event) {
             if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
@@ -234,12 +236,15 @@
             }
         });
 
-        function sendMessage() {
+        function sendMessage(promptx, add) {
             var model = document.getElementById("model").value;
             var prompt = document.getElementById("prompt").value;
             var chat = document.getElementById("chat");
             var sendButton = document.getElementById("sendButton");
 
+			if (promptx) {
+       			var prompt = promptx;
+          	}
             document.getElementById("prompt").value = "";
 
             // Disable send button
@@ -252,11 +257,12 @@
             chatHistory.messages.push({ role: "user", content: prompt });
 
             // Create user message element
-            var userMessage = document.createElement("div");
-            userMessage.classList.add("message", "user-message");
-            userMessage.textContent = prompt; // Set textContent to escape HTML
-            chat.appendChild(userMessage);
-
+            if (add != "no") {
+    	        var userMessage = document.createElement("div");
+       	     userMessage.classList.add("message", "user-message");
+          	  userMessage.textContent = prompt; // Set textContent to escape HTML
+           	 chat.appendChild(userMessage);
+			}
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
 
@@ -310,12 +316,6 @@
             // Clear chat messages in the UI
             var chat = document.getElementById("chat");
             chat.innerHTML = '';
-            // Create user message element
-            var startMessage = document.createElement("div");
-            startMessage.classList.add("message", "user-message");
-            startMessage.textContent = "Fixed"; // Set textContent to escape HTML
-            chat.appendChild(startMessage);
-
             var system = ""
             if (sys) {
                 var system = sys
@@ -333,7 +333,10 @@
 
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
+            sendMessage("Hello!", "no");
         }
+    
+    	clearChat();
 
         function toggleEditSystemGUI() {
             var systemEditContainer = document.getElementById("systemEditContainer");
@@ -360,6 +363,7 @@
             } else {
                 navbar.style.display = 'none'; // Hide the navbar
             }
+        
         });
     </script>
 </body>
