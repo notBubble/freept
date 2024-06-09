@@ -332,18 +332,23 @@
             chatHistory = {
                 model: "gpt-4o",
                 messages: [
-                    {
-                        role: "system",
-                        content: system
-                    }
+                {
+                    role: "system",
+                    content: system
+                }
                 ]
             };
 
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
+
+            // reset navbar display
+            var navbar = document.querySelector('.navbar');
+            navbar.style.display = 'flex'; // show navbar
+
             sendMessage("Hello!", "no");
         }
-    
+
     	clearChat();
 
         function toggleEditSystemGUI() {
