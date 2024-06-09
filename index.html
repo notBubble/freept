@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreePT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <title>Basic HTML Template</title>
     <style>
         body {
             font-family: 'Lexend', sans-serif;
@@ -69,7 +68,6 @@
             flex: 1;
             padding: 10px;
             margin-right: 5px;
-            margin-left: -10px;
             border: none;
             border-radius: 5px;
             background-color: #444;
@@ -82,14 +80,17 @@
         button {
             padding: 10px 20px;
             border: none;
-            margin-right: 25px;
-            margin-left: 10px;
             border-radius: 5px;
+            margin-left: 10px;
             background-color: #7289da;
             color: #fff;
             cursor: pointer;
             box-shadow: 0 0 10px #7b94f2;
             outline: none;
+        }
+
+        #sendButton {
+            margin-right: 35px;
         }
 
         button:hover {
@@ -177,63 +178,70 @@
         .system-edit-container button:hover {
             background-color: #5f73a1;
         }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
     </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreePT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- External CSS link -->
 </head>
 <body>
-    <div class="loading-container" id="loadingContainer">
+    <div class="loading-container" id="loadingContainer" role="alert">
         <div class="loading-message" id="loadingMessage">Thinking...</div>
     </div>
-    <div class="navbar">
+    <nav class="navbar" aria-label="Main Navigation">
         <div class="navbar-title">FreePT</div>
         <div>
-            <select id="model">
-    		<option value="gpt-3.5-turbo">GPT 3.5 Turbo</option>
-   		<option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo 1106</option>
-    		<option value="gpt-3.5-turbo-0125">GPT 3.5 Turbo 0125</option>
-    		<option value="gpt-3.5-turbo-16k">GPT 3.5 Turbo 16k</option>
-    		<option value="gpt-4">GPT 4</option>
-    		<option value="gpt-4-0125-preview">GPT 4 0125 Preview</option>
-    		<option value="gpt-4-0613">GPT 4 0613</option>
-    		<option value="gpt-4-1106-preview">GPT 4 1106 Preview</option>
-    		<option value="gpt-4-0125-preview">GPT 4 0125 Preview</option>
-    		<option value="gpt-4-vision-preview">GPT 4 Vision Preview</option>
-    		<option value="gpt-4-turbo">GPT 4 Turbo</option>
-    		<option value="gpt-4o">GPT 4o</option>
-    		<option value="llava-1.5">Llava 1.5</option>
-    		<option value="gemma-7b">Gemma 7b</option>
-    		<option value="llama-3-8b">Llama 3 8b</option>
-    		<option value="llama-3-70b">Llama 3 70b</option>
-	    </select>
-            <button onclick="clearChat()">New Chat</button>
-            <button onclick="toggleEditSystemGUI()">Edit System</button>
+            <label for="model" class="sr-only">Choose Model</label>
+            <select id="model" aria-label="Model Selection">
+                <option value="gpt-3.5-turbo">GPT 3.5 Turbo</option>
+                <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo 1106</option>
+                <option value="gpt-3.5-turbo-0125">GPT 3.5 Turbo 0125</option>
+                <option value="gpt-3.5-turbo-16k">GPT 3.5 Turbo 16k</option>
+                <option value="gpt-4">GPT 4</option>
+                <option value="gpt-4-0125-preview">GPT 4 0125 Preview</option>
+                <option value="gpt-4-0613">GPT 4 0613</option>
+                <option value="gpt-4-1106-preview">GPT 4 1106 Preview</option>
+                <option value="gpt-4-0125-preview">GPT 4 0125 Preview</option>
+                <option value="gpt-4-vision-preview">GPT 4 Vision Preview</option>
+                <option value="gpt-4-turbo">GPT 4 Turbo</option>
+                <option value="gpt-4o">GPT 4o</option>
+                <option value="llava-1.5">Llava 1.5</option>
+                <option value="gemma-7b">Gemma 7b</option>
+                <option value="llama-3-8b">Llama 3 8b</option>
+                <option value="llama-3-70b">Llama 3 70b</option>
+            </select>
+            <button onclick="clearChat()" aria-label="Start New Chat">New Chat</button>
+            <button id="sendButton" onclick="toggleEditSystemGUI()" aria-label="Edit System Prompt">Edit System</button>
         </div>
-    </div>
-    <div class="chat-container" id="chatContainer">
+    </nav>
+    <main class="chat-container" id="chatContainer" aria-live="polite">
         <div class="chat" id="chat">
             <!-- Chat messages will be displayed here -->
         </div>
+    </main>
+    <div class="input-container" aria-label="User Input">
+        <textarea id="prompt" rows="2" placeholder="Type your message..." aria-label="Message Input"></textarea>
+        <button id="sendButton" onclick="sendMessage()" aria-label="Send Message">Send</button>
     </div>
-    <div class="input-container">
-        <textarea id="prompt" rows="2" placeholder="Type your message..."></textarea>
-        <button id="sendButton" onclick="sendMessage()">Send</button>
-    </div>
-    <!-- System Edit GUI -->
-    <div class="system-edit-container" id="systemEditContainer">
-        <textarea id="systemPrompt" rows="5" placeholder="Enter the new system prompt..."></textarea>
-        <button onclick="changeSystemPrompt()">Change System</button>
-        <button onclick="toggleEditSystemGUI()">Close</button>
+    <div class="system-edit-container" id="systemEditContainer" aria-label="Edit System Prompt">
+        <textarea id="systemPrompt" rows="5" placeholder="Enter the new system prompt..." aria-label="System Prompt Input"></textarea>
+        <button onclick="changeSystemPrompt()" aria-label="Change System Prompt">Change System</button>
+        <button onclick="toggleEditSystemGUI()" aria-label="Close Edit System Prompt">Close</button>
     </div>
     <script>
-        var chatHistory = {
-            model: "gpt-4o",
-            messages: [
-                {
-                    role: "system",
-                    content: ""
-                }
-            ]
-        };
-
         document.getElementById("prompt").addEventListener("keypress", function(event) {
             if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
@@ -250,9 +258,9 @@
             var chat = document.getElementById("chat");
             var sendButton = document.getElementById("sendButton");
 
-			if (promptx) {
-       			var prompt = promptx;
-          	}
+            if (promptx) {
+                prompt = promptx;
+            }
             document.getElementById("prompt").value = "";
 
             // Disable send button
@@ -266,11 +274,12 @@
 
             // Create user message element
             if (add != "no") {
-    	        var userMessage = document.createElement("div");
-       	     userMessage.classList.add("message", "user-message");
-          	  userMessage.textContent = prompt; // Set textContent to escape HTML
-           	 chat.appendChild(userMessage);
-			}
+                var userMessage = document.createElement("div");
+                userMessage.classList.add("message", "user-message");
+                userMessage.textContent = prompt; // Set textContent to escape HTML
+                chat.appendChild(userMessage);
+            }
+
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
 
@@ -305,7 +314,7 @@
                 // Create bot message element
                 var botMessage = document.createElement("div");
                 botMessage.classList.add("message", "bot-message");
-                botMessage.textContent = botResponseContent
+                botMessage.textContent = botResponseContent;
                 chat.appendChild(botMessage);
 
                 // Scroll to bottom
@@ -324,32 +333,30 @@
             // Clear chat messages in the UI
             var chat = document.getElementById("chat");
             chat.innerHTML = '';
-            var system = ""
+            var system = "";
             if (sys) {
-                var system = sys
+                system = sys;
             }
 
             chatHistory = {
                 model: "gpt-4o",
                 messages: [
-                {
-                    role: "system",
-                    content: system
-                }
+                    {
+                        role: "system",
+                        content: system
+                    }
                 ]
             };
 
             // Scroll to bottom
             chat.scrollTop = chat.scrollHeight;
 
-            // reset navbar display
+            // Reset navbar display
             var navbar = document.querySelector('.navbar');
             navbar.style.display = 'flex'; // show navbar
 
             sendMessage("Hello!", "no");
         }
-
-    	clearChat();
 
         function toggleEditSystemGUI() {
             var systemEditContainer = document.getElementById("systemEditContainer");
@@ -362,9 +369,8 @@
 
         function changeSystemPrompt() {
             var newSystemPrompt = document.getElementById("systemPrompt").value.trim();
-            var newSys = newSystemPrompt
             toggleEditSystemGUI(); // Hide the GUI after changing the system prompt
-            clearChat(newSys);
+            clearChat(newSystemPrompt);
         }
 
         // Add event listener for scroll event on the chat container
@@ -376,8 +382,10 @@
             } else {
                 navbar.style.display = 'none'; // Hide the navbar
             }
-        
         });
+
+        // Initialize chat
+        clearChat();
     </script>
 </body>
 </html>
